@@ -1,5 +1,8 @@
 package tsuteto.tofufactory.core;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.MinecraftForge;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -12,8 +15,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.MinecraftForge;
 import tsuteto.tofufactory.achievement.TFTriggerManager;
 import tsuteto.tofufactory.config.TFConfig;
 import tsuteto.tofufactory.fluid.TFFluids;
@@ -32,26 +33,33 @@ import tsuteto.tofufactory.world.WorldGeneratorHandler;
     modid = TofuFactory.modId,
     name = "TofuFactory Reloaded",
     version = TofuFactory.version,
-    dependencies = "required-after:TofuCraft"
-            + ";after:" + ModIDs.BC
-            + ";after:" + ModIDs.FFM
-            + ";after:" + ModIDs.IC2
-            + ";after:" + ModIDs.FC
-            + ";after:" + ModIDs.GT5
-            + ";after:" + ModIDs.GT6
-            + ";after:" + ModIDs.MT
-            + ";after:" + ModIDs.Bamboo
-            + ";after:" + ModIDs.AE
-            + ";after:" + ModIDs.TC
-            + ";after:" + ModIDs.TCon,
-    acceptedMinecraftVersions = "[1.7.10,1.8)"
-)
-public class TofuFactory
-{
+    dependencies = "required-after:TofuCraft" + ";after:"
+        + ModIDs.BC
+        + ";after:"
+        + ModIDs.FFM
+        + ";after:"
+        + ModIDs.IC2
+        + ";after:"
+        + ModIDs.FC
+        + ";after:"
+        + ModIDs.MT
+        + ";after:"
+        + ModIDs.Bamboo
+        + ";after:"
+        + ModIDs.AE
+        + ";after:"
+        + ModIDs.TC
+        + ";after:"
+        + ModIDs.TCon,
+    acceptedMinecraftVersions = "[1.7.10,1.8)")
+public class TofuFactory {
+
     public static final String modId = "TofuFactory";
     public static final String version = "1.3.0-MC1.7.10";
     public static final String resourceDomain = "tofufactory:";
-    public static final TFLog log = new TFLog(TofuFactory.modId, Boolean.valueOf(System.getProperty("tofufactory.debug", "false")));
+    public static final TFLog log = new TFLog(
+        TofuFactory.modId,
+        Boolean.valueOf(System.getProperty("tofufactory.debug", "false")));
 
     @Instance(modId)
     public static TofuFactory instance;
@@ -63,8 +71,7 @@ public class TofuFactory
     public static UpdateNotification update = null;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         log.info("Starting TofuFactory {}", version);
         ModInfo.load(modMetadata);
         TFConfig.ConfigRead(event);
@@ -74,14 +81,14 @@ public class TofuFactory
 
         TFFluids.registerFluids();
 
-        if (event.getSide() == Side.CLIENT)
-        {
+        if (event.getSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new TFFluids());
             MinecraftForge.EVENT_BUS.register(new TFIconTexture());
         }
 
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new TFGuiHandler());
-        VillagerRegistry.instance().registerVillageTradeHandler(2 /*Priest*/, new TradeHandlerPriest());
+        VillagerRegistry.instance()
+            .registerVillageTradeHandler(2 /* Priest */, new TradeHandlerPriest());
 
         TofuMachineRecipe.initRecipe();
         TFItems.init();
@@ -91,16 +98,14 @@ public class TofuFactory
         TFIntegrationManager.preInitPlugins();
 
         // Update check!
-        if (TFConfig.updateCheck)
-        {
+        if (TFConfig.updateCheck) {
             update = new UpdateNotification();
             update.checkUpdate();
         }
     }
 
     @EventHandler
-    public void load(FMLInitializationEvent event)
-    {
+    public void load(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new TFTriggerManager());
         GameRegistry.registerWorldGenerator(new WorldGeneratorHandler(), 2);
         TFOreDictionary.registerOreDictionary();
@@ -111,16 +116,12 @@ public class TofuFactory
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-    }
+    public void postInit(FMLPostInitializationEvent event) {}
 
     @EventHandler
-    public void serverStarting(FMLServerStartingEvent event)
-    {
+    public void serverStarting(FMLServerStartingEvent event) {
         // Notify if update is available
-        if (update != null && event.getSide() == Side.SERVER)
-        {
+        if (update != null && event.getSide() == Side.SERVER) {
             update.notifyUpdate(event.getServer(), event.getSide());
         }
     }
